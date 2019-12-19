@@ -4,15 +4,14 @@ import { message, Button } from 'antd';
 import './App.css';
 
 const App: React.FC = () => {
-  message.success('前端页面1');
+  message.success('前端页面');
   message.success('create-react-app + typescript + antd');
   return (
     <div className="App">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
-          前端页面2
-          <Button>2</Button>
+          前端页面
         </p>
       </header>
     </div>
