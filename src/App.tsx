@@ -4,6 +4,7 @@ import { message, Button } from 'antd';
 import './App.css';
 
 const App: React.FC = () => {
+  message.success('fe');
   message.success('create-react-app + typescript + antd');
   return (
     <div className="App">
