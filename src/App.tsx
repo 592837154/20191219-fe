@@ -12,7 +12,6 @@ const App: React.FC = () => {
         <img src={logo} className="App-logo" alt="logo" />
         <p>
           前端页面
-          <Button>1</Button>
         </p>
       </header>
     </div>
