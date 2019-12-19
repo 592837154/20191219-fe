@@ -1,6 +1,6 @@
 import React from 'react';
 import logo from './logo.svg';
-import { message } from 'antd';
+import { message, Button } from 'antd';
 import './App.css';
 
 const App: React.FC = () => {
@@ -12,6 +12,7 @@ const App: React.FC = () => {
         <img src={logo} className="App-logo" alt="logo" />
         <p>
           前端页面2
+          <Button>2</Button>
         </p>
       </header>
     </div>
