@@ -11,7 +11,7 @@ const App: React.FC = () => {
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
-          前端页面
+          前端页面1
         </p>
       </header>
     </div>
