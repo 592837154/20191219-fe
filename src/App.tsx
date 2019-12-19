@@ -11,9 +11,9 @@ const App: React.FC = () => {
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
-          前端页面
-          <Button>爱?</Button>
-          <Button>更爱?</Button>
+          {/* 前端页面 */}
+          <Button onClick={()=>{  message.success('老公也爱你');}}>爱?</Button>
+          <Button  onClick={()=>{  message.success('老公也更爱你');}}>更爱?</Button>
         </p>
       </header>
     </div>
