@@ -4,7 +4,6 @@ import { message, Button } from 'antd';
 import './App.css';
 
 const App: React.FC = () => {
-  message.success('前端页面');
   message.success('create-react-app + typescript + antd');
   return (
     <div className="App">
