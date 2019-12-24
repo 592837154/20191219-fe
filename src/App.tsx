@@ -6,23 +6,30 @@ import './App.css';
 const App: React.FC = () => {
   const [data, setData] = useState('');
   const getData = () => {
-    console.log(fetch);
     setData('')
+    // fetch('http://localhost:2019/api/first').then((aaa)=> {
+    //   console.log(aaa);
+    // })
     fetch(
-      '/first'
+      '/api/first'
     )
       .then((res) => res.json())
       .then(({ data }) => {
-        setData(data);
+        console.log(data);
+        
+        setData(data.constent);
       }).catch((err) => {
         console.log(err);
       })
   }
   const postData = () => {
     setData('');
-    fetch('/first', {
+    fetch('/api/first', {
       method: 'POST',
-      body: 'a=post请求!&b=asd',
+      body: JSON.stringify({
+        // 你想要发送到后台的数据，以对象形式发送
+        a: 'post成功',
+    }),
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
