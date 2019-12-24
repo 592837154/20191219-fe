@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import logo from './logo.svg';
 import { message, Button } from 'antd';
+import Router from './pages/router';
 import './App.css';
 
 const App: React.FC = () => {
@@ -60,6 +61,7 @@ const App: React.FC = () => {
           <Button onClick={getData}>get</Button>
           <Button onClick={postData}>post</Button>
         </div>
+        <Router/>
       </header>
     </div>
   );
