@@ -9,6 +9,7 @@ import G6 from '@antv/g6';
 console.log('feat：新功能（feature）');
 console.log('fix：修补bug');
 console.log('style：样式（不影响代码运行的变动）');
+console.log('refactor：重构（即不是新增功能，也不是修改bug的代码变动）');
 
 
 const data = {
