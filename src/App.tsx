@@ -8,6 +8,8 @@ import './App.css';
 import G6 from '@antv/g6';
 console.log('feat：新功能（feature）');
 console.log('fix：修补bug');
+console.log('style：样式（不影响代码运行的变动）');
+
 
 const data = {
 	"nodes": [{
