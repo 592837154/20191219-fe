@@ -6,7 +6,7 @@ import { aaa } from './aaa';
 import TestRef from './TestRef';
 import './App.css';
 import G6 from '@antv/g6';
-console.log(12);
+console.log(123);
 
 const data = {
 	"nodes": [{
