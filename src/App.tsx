@@ -7,6 +7,7 @@ import TestRef from './TestRef';
 import './App.css';
 import G6 from '@antv/g6';
 console.log('feat：新功能（feature）');
+console.log('fix：修补bug');
 
 const data = {
 	"nodes": [{
