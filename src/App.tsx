@@ -1,69 +1,278 @@
-import React, { useState, useEffect } from 'react';
-import logo from './logo.svg';
-import { message, Button } from 'antd';
-import Router from './pages/router';
+import React, { Component } from 'react';
+import { Upload, message, Button, Icon, Layout, Menu, Breadcrumb, List, Skeleton, Avatar, Modal, Steps, Form, Input } from 'antd';
 import './App.css';
+const { Header, Content, Footer } = Layout;
+const { Step } = Steps;
+interface IProps {
+  form: any;
+}
+interface IState {
+  breadcrumbs: string[];
+  visible: boolean;
+  currentStep: number;
+  detail: any;
+}
+const formItemLayout = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 8 },
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 16 },
+  },
+};
+const tailFormItemLayout = {
+  wrapperCol: {
+    xs: {
+      span: 24,
+      offset: 0,
+    },
+    sm: {
+      span: 16,
+      offset: 8,
+    },
+  },
+};
+const BASEURL = '127.0.0.1';
+const PORT = '323';
+const URL = BASEURL + ':' + PORT;
+const aaa = { "results": [{ "gender": "female", "name": { "title": "Mrs", "first": "Anni", "last": "Kivela" }, "email": "anni.kivela@example.com", "nat": "FI" }, { "gender": "female", "name": { "title": "Mrs", "first": "مهرسا", "last": "رضاییان" }, "email": "mhrs.rdyyn@example.com", "nat": "IR" }, { "gender": "female", "name": { "title": "Miss", "first": "یسنا", "last": "نكو نظر" }, "email": "ysn.nkwnzr@example.com", "nat": "IR" }] };
 
-const App: React.FC = () => {
-  const [data, setData] = useState('');
-  const getData = () => {
-    setData('')
-    // fetch('http://localhost:2019/api/first').then((aaa)=> {
-    //   console.log(aaa);
-    // })
-    fetch(
-      '/api/first'
-    )
-      .then((res) => res.json())
-      .then(({ data }) => {
-        console.log(data);
-        
-        setData(data.constent);
-      }).catch((err) => {
-        console.log(err);
-      })
+const UPLOAD = {
+  name: 'file',
+  action: `http://${URL}/upload`,
+  headers: {
+    authorization: 'authorization-text',
+  },
+};
+const TABS = [
+  {
+    label: '家具',
+    value: 'furniture',
+    breadcrumbs: ['主页', '列表']
+  },
+  {
+    label: '其他',
+    value: 'other',
+    breadcrumbs: ['主页', '其他']
   }
-  const postData = () => {
-    setData('');
-    fetch('/api/first', {
-      method: 'POST',
-      body: JSON.stringify({
-        // 你想要发送到后台的数据，以对象形式发送
-        a: 'post成功',
-    }),
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      }
-    }).then(res => res.json()).then(((res) => {
-      console.log(res);
-      setData(res.a);
-    })).catch(err => {
-      console.log(err);
+]
+class App extends Component<IProps, IState> {
+  constructor(props: any) {
+    super(props);
+    this.state = {
+      breadcrumbs: TABS[0].breadcrumbs,
+      visible: false,
+      currentStep: 0,
+      detail: {}
+    }
+  }
+  public onChange = (info: any) => {
+    if (info.file.status !== 'uploading') {
+    }
+    if (info.file.status === 'done') {
+      console.log(info.file.response);
+      this.setState({
+        currentStep: 2
+      });
+      message.success('成功');
+    } else if (info.file.status === 'error') {
+      message.error(`${info.file.name} file upload failed.`);
+    }
+  }
+  public changeMenu = (a: any) => {
+    const result: any = TABS.find((item: any) => a.key === item.value);
+    this.setState({
+      breadcrumbs: result.breadcrumbs
     })
   }
-  useEffect(() => {
-    if (data.length) {
-      message.success(data);
-    }
-  }, [data])
-  useEffect(() => {
-    message.success('create-react-app + typescript + antd');
-  }, [])
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          前端111页面
-        </p>
-        <div className="buttons">
-          <Button onClick={getData}>get</Button>
-          <Button onClick={postData}>post</Button>
-        </div>
-        <Router/>
-      </header>
-    </div>
-  );
+  public showModal = () => {
+    this.setState({
+      visible: true
+    })
+  }
+  public hideModal = () => {
+    this.setState({
+      visible: false,
+      currentStep: 0,
+      detail: {}
+    })
+  }
+  public handleSubmit = (e: any) => {
+    e.preventDefault();
+    this.props.form.validateFieldsAndScroll((err: any, values: any) => {
+      if (!err) {
+        console.log('Received values of form: ', values);
+        this.setState({
+          currentStep: 1,
+          detail: values
+        })
+      }
+    });
+  };
+  public componentDidMount() {
+    const BASEURL = '127.0.0.1';
+    const PORT = '323';
+    const URL = BASEURL + ':' + PORT;
+    fetch(`http://${URL}/data`)
+      .then(function (response) {
+        return response.json();
+      })
+      .then(function (myJson) {
+        console.log(myJson);
+      });
+  }
+  public renderTabs = () => {
+    const { breadcrumbs, } = this.state;
+    return (
+      <Layout>
+        <Header style={{ position: 'fixed', zIndex: 1, width: '100%' }}>
+          <div className="logo" />
+          <Menu
+            theme="dark"
+            mode="horizontal"
+            defaultSelectedKeys={[TABS[0].value]}
+            style={{ lineHeight: '64px' }}
+            onClick={this.changeMenu}
+          >
+            {
+              TABS.map((item: any) => {
+                return <Menu.Item key={item.value}>{item.label}</Menu.Item>;
+              })
+            }
+          </Menu>
+        </Header>
+        <Content style={{ padding: '0 50px', marginTop: 64 }}>
+          <div className="breadcrumbbox">
+            <Breadcrumb style={{ margin: '16px 0' }}>
+              {
+                breadcrumbs.map((item: any) => {
+                  return <Breadcrumb.Item key={item}>{item}</Breadcrumb.Item>;
+                })
+              }
+            </Breadcrumb>
+            <Button onClick={this.showModal} type="primary">
+              <Icon type="plus-square" />新增
+            </Button>
+          </div>
+          <div style={{ background: '#fff', padding: 24, minHeight: 730 }}>
+            <List
+              className="demo-loadmore-list"
+              itemLayout="horizontal"
+              dataSource={aaa.results}
+              renderItem={(item: any) => (
+                <List.Item
+                  actions={[<span key="list-loadmore-edit">编辑</span>, <span key="list-loadmore-more">删除</span>]}
+                >
+                  <Skeleton avatar title={false} loading={item.loading} active>
+                    <div>content</div>
+                    <List.Item.Meta
+                      avatar={
+                        <Avatar size="large" src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
+                      }
+                      title={<span>{item.name.last}</span>}
+                      description="Ant Design, a design language for background applications, is refined by Ant UED Team"
+                    />
+                  </Skeleton>
+                </List.Item>
+              )}
+            />
+          </div>
+        </Content>
+        <Footer style={{ textAlign: 'center' }}>让生活更美好 !</Footer>
+      </Layout>
+    )
+  }
+  render() {
+    const { getFieldDecorator } = this.props.form;
+    const { visible, currentStep, detail } = this.state;
+    return (
+      <div >
+        {
+          this.renderTabs()
+        }
+        {
+          visible ?
+            <Modal
+              title="上传信息"
+              visible={visible}
+              onCancel={this.hideModal}
+              footer={
+                <Button onClick={this.hideModal} type="primary">
+                  确定
+  </Button>
+              }
+            >
+              <Steps current={currentStep} size="small">
+                <Step title="填写信息" />
+                <Step title="上传图片" />
+                <Step title="成功!" />
+              </Steps>
+              <div>
+                {
+                  currentStep === 0 ?
+                    <div >
+                      <Form {...formItemLayout} onSubmit={this.handleSubmit}>
+                        <Form.Item label="名称">
+                          {getFieldDecorator('name', {
+                            rules: [
+                              {
+                                required: true,
+                                message: '请输入名称!',
+                              },
+                            ],
+                          })(<Input />)}
+                        </Form.Item>
+                        <Form.Item label="描述">
+                          {getFieldDecorator('des', {
+                            rules: [
+                              {
+                                required: true,
+                                message: '请输入描述!',
+                              },
+                            ],
+                          })(<Input />)}
+                        </Form.Item>
+                        <Form.Item {...tailFormItemLayout}>
+                          <Button type="primary" htmlType="submit">
+                            下一步
+          </Button>
+                        </Form.Item>
+                      </Form>
+                    </div>
+                    : null
+
+                }
+                {
+                  currentStep === 1 ?
+                    <div>
+
+                      <Upload {...UPLOAD} onChange={this.onChange} data={detail}>
+                        <Button>
+                          <Icon type="upload" /> 上传
+</Button>
+                      </Upload>
+
+                    </div> : null
+
+                }
+                {
+                  currentStep === 2 ?
+                    <div>
+                      11123
+
+                 </div> : null
+                }
+              </div>
+
+            </Modal> : null
+        }
+
+      </div>
+    );
+  }
 }
-export default App;
+
+
+export default Form.create({ name: 'register' })(App);
