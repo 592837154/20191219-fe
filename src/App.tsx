@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { Upload, message, Button, Icon, Layout, Menu, Breadcrumb, List, Skeleton, Avatar, Modal, Steps, Form, Input } from 'antd';
+import { Upload, message, Button, Icon, Layout, Menu, Breadcrumb, List, Skeleton, Avatar, Modal, Steps, Form, Input, Collapse } from 'antd';
 import './App.css';
 const { Header, Content, Footer } = Layout;
 const { Step } = Steps;
+const { Panel } = Collapse;
 interface IProps {
   form: any;
 }
@@ -13,6 +14,7 @@ interface IState {
   detail: any;
   loading: boolean;
   listData: any[];
+  curTab: string;
 }
 const formItemLayout = {
   labelCol: {
@@ -68,7 +70,8 @@ class App extends Component<IProps, IState> {
       currentStep: 0,
       detail: {},
       loading: false,
-      listData: []
+      listData: [],
+      curTab: 'furniture'
     }
   }
   public onChange = (info: any) => {
@@ -87,10 +90,15 @@ class App extends Component<IProps, IState> {
   public changeMenu = (a: any) => {
     const result: any = TABS.find((item: any) => a.key === item.value);
     this.setState({
-      breadcrumbs: result.breadcrumbs
+      breadcrumbs: result.breadcrumbs,
+      curTab: result.value
     })
   }
   public showModal = () => {
+    if (navigator.userAgent !== 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36') {
+      message.warning('对不起, 您暂时尚无新增权限');
+      return;
+    }
     this.setState({
       visible: true
     })
@@ -100,7 +108,7 @@ class App extends Component<IProps, IState> {
       visible: false,
       currentStep: 0,
       detail: {}
-    })
+    }, this.getData)
   }
   public handleSubmit = (e: any) => {
     e.preventDefault();
@@ -114,7 +122,17 @@ class App extends Component<IProps, IState> {
       }
     });
   };
-  public componentDidMount() {
+  public edit = (e: any) => {
+    console.log(e);
+    message.warning('对不起, 您暂时尚无编辑权限');
+    e.stopPropagation();
+  }
+  public delete = (e: any) => {
+    console.log(e);
+    message.warning('对不起, 您暂时尚无删除权限');
+    e.stopPropagation();
+  }
+  public getData = () => {
     this.setState({
       loading: true
     }, () => {
@@ -133,10 +151,14 @@ class App extends Component<IProps, IState> {
           console.log(myJson);
         });
     })
-
+  }
+  public componentDidMount() {
+    this.getData();
   }
   public renderTabs = () => {
-    const { breadcrumbs, loading, listData } = this.state;
+    const { breadcrumbs, loading, listData, curTab } = this.state;
+    console.log(curTab);
+
     return (
       <Layout>
         <Header style={{ position: 'fixed', zIndex: 1, width: '100%' }}>
@@ -169,31 +191,50 @@ class App extends Component<IProps, IState> {
             </Button>
           </div>
           <div style={{ background: '#fff', padding: 24, minHeight: 730 }}>
-            <List
-              className="demo-loadmore-list"
-              itemLayout="horizontal"
-              dataSource={listData}
-              renderItem={({ name, des, filename }: any, index: number) => {
-                console.log(`${URL}/${filename}`);
-                
-                return (
-                  <List.Item
-                  actions={[<span key="list-loadmore-edit">编辑</span>, <span key="list-loadmore-more">删除</span>]}
-                >
-                  <Skeleton avatar title={false} loading={loading} active>
-                    <div>{index}</div>
-                    <List.Item.Meta
-                      avatar={
-                        <Avatar size="large" src={`http://${URL}/${filename}`} />
-                      }
-                      title={<span>{name}</span>}
-                      description={des}
-                    />
-                  </Skeleton>
-                </List.Item>
-                )
-              }}
-            />
+            {
+              curTab === 'furniture' ?
+                <List
+                  className="demo-loadmore-list"
+                  itemLayout="horizontal"
+                  dataSource={listData}
+                  renderItem={({ name, des, filename }: any, index: number) => {
+                    return (
+                      <List.Item
+                      >
+                        <Collapse >
+                          <Panel
+                            header={
+                              <Skeleton avatar title={false} loading={loading} active>
+                                <div className="number">{index + '、'}</div>
+                                <List.Item.Meta
+                                  avatar={
+                                    <Avatar size="large" src={`http://${URL}/${filename}`} />
+                                  }
+                                  title={<span>{name}</span>}
+                                  description={des}
+                                />
+                                <div className="action">
+                                  <div className="list-loadmore-edit" onClick={(e) => this.edit(e)}>编辑</div>
+                                  <div className="list-loadmore-edit" onClick={(e) => this.delete(e)}>删除</div>
+                                </div>
+                              </Skeleton>
+                            }
+                            key="1"
+                          >
+                            <div className="panel">
+                              <img src={`http://${URL}/${filename}`} alt="" width={(window.screen.width - 150) / 3} />
+                            </div>
+                          </Panel>
+                        </Collapse>
+                      </List.Item>
+                    )
+                  }}
+                />
+                : null
+            }
+            {
+              curTab === 'other' ? <div>开发中...</div> : null
+            }
           </div>
         </Content>
         <Footer style={{ textAlign: 'center' }}>让生活更美好 !</Footer>

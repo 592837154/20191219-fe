@@ -5,11 +5,46 @@
   margin: 16px 24px 16px 0;
   float: left;
 }
+
 .demo-loadmore-list {
   min-height: 350px;
 }
-.breadcrumbbox{
+
+.breadcrumbbox {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.ant-collapse {
+  width: 100%;
+}
+
+.ant-collapse-header {
+  display: flex;
+  align-items: center;
+}
+
+.number {
+  margin-right: 15px;
+}
+
+.panel {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.action {
+  display: flex;
+  width: 70px;
+  height: 72px;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.list-loadmore-edit {
+  display: flex;
+  align-items: center;
+  height: 100%;
 }
