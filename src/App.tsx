@@ -11,6 +11,8 @@ interface IState {
   visible: boolean;
   currentStep: number;
   detail: any;
+  loading: boolean;
+  listData: any[];
 }
 const formItemLayout = {
   labelCol: {
@@ -37,7 +39,6 @@ const tailFormItemLayout = {
 const BASEURL = '127.0.0.1';
 const PORT = '323';
 const URL = BASEURL + ':' + PORT;
-const aaa = { "results": [{ "gender": "female", "name": { "title": "Mrs", "first": "Anni", "last": "Kivela" }, "email": "anni.kivela@example.com", "nat": "FI" }, { "gender": "female", "name": { "title": "Mrs", "first": "مهرسا", "last": "رضاییان" }, "email": "mhrs.rdyyn@example.com", "nat": "IR" }, { "gender": "female", "name": { "title": "Miss", "first": "یسنا", "last": "نكو نظر" }, "email": "ysn.nkwnzr@example.com", "nat": "IR" }] };
 
 const UPLOAD = {
   name: 'file',
@@ -65,7 +66,9 @@ class App extends Component<IProps, IState> {
       breadcrumbs: TABS[0].breadcrumbs,
       visible: false,
       currentStep: 0,
-      detail: {}
+      detail: {},
+      loading: false,
+      listData: []
     }
   }
   public onChange = (info: any) => {
@@ -112,19 +115,28 @@ class App extends Component<IProps, IState> {
     });
   };
   public componentDidMount() {
-    const BASEURL = '127.0.0.1';
-    const PORT = '323';
-    const URL = BASEURL + ':' + PORT;
-    fetch(`http://${URL}/data`)
-      .then(function (response) {
-        return response.json();
-      })
-      .then(function (myJson) {
-        console.log(myJson);
-      });
+    this.setState({
+      loading: true
+    }, () => {
+      const BASEURL = '127.0.0.1';
+      const PORT = '323';
+      const URL = BASEURL + ':' + PORT;
+      fetch(`http://${URL}/data`)
+        .then(function (response) {
+          return response.json();
+        })
+        .then((myJson) => {
+          this.setState({
+            loading: false,
+            listData: myJson
+          })
+          console.log(myJson);
+        });
+    })
+
   }
   public renderTabs = () => {
-    const { breadcrumbs, } = this.state;
+    const { breadcrumbs, loading, listData } = this.state;
     return (
       <Layout>
         <Header style={{ position: 'fixed', zIndex: 1, width: '100%' }}>
@@ -160,23 +172,27 @@ class App extends Component<IProps, IState> {
             <List
               className="demo-loadmore-list"
               itemLayout="horizontal"
-              dataSource={aaa.results}
-              renderItem={(item: any) => (
-                <List.Item
+              dataSource={listData}
+              renderItem={({ name, des, filename }: any, index: number) => {
+                console.log(`${URL}/${filename}`);
+                
+                return (
+                  <List.Item
                   actions={[<span key="list-loadmore-edit">编辑</span>, <span key="list-loadmore-more">删除</span>]}
                 >
-                  <Skeleton avatar title={false} loading={item.loading} active>
-                    <div>content</div>
+                  <Skeleton avatar title={false} loading={loading} active>
+                    <div>{index}</div>
                     <List.Item.Meta
                       avatar={
-                        <Avatar size="large" src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
+                        <Avatar size="large" src={`http://${URL}/${filename}`} />
                       }
-                      title={<span>{item.name.last}</span>}
-                      description="Ant Design, a design language for background applications, is refined by Ant UED Team"
+                      title={<span>{name}</span>}
+                      description={des}
                     />
                   </Skeleton>
                 </List.Item>
-              )}
+                )
+              }}
             />
           </div>
         </Content>
