@@ -38,7 +38,7 @@ const tailFormItemLayout = {
     },
   },
 };
-const BASEURL = '127.0.0.1';
+const BASEURL = '148.70.226.250';
 const PORT = '323';
 const URL = BASEURL + ':' + PORT;
 
@@ -136,9 +136,6 @@ class App extends Component<IProps, IState> {
     this.setState({
       loading: true
     }, () => {
-      const BASEURL = '127.0.0.1';
-      const PORT = '323';
-      const URL = BASEURL + ':' + PORT;
       fetch(`http://${URL}/data`)
         .then(function (response) {
           return response.json();
