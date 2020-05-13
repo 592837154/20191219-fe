@@ -4,8 +4,6 @@ import './App.css';
 const { Header, Content, Footer } = Layout;
 const { Step } = Steps;
 const { Panel } = Collapse;
-console.log("Panel", Panel)
-
 interface IProps {
   form: any;
 }
